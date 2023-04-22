@@ -40,7 +40,7 @@ async function ShowUser(userData = null) {
         picture: { large: userPic },
       } = user;
 
-      userName.innerHTML = `${first} ${last} ${title}`;
+      userName.innerHTML = `${title} ${first} ${last}`;
       userImg.src = `${userPic}`;
 
       /// append
