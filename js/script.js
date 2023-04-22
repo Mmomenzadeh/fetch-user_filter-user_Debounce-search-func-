@@ -1,13 +1,14 @@
 "use strict";
 
 const BASE_URL = "https://randomuser.me/api/?inc=name,picture&results=48";
-const response = fetch(BASE_URL);
 
-response
-  .then((res) => res.json())
-  .then((result) => {
-    const userData = result.results;
-
+// useing IIFE
+(async function () {
+  try {
+    const response = await fetch(BASE_URL);
+    const result = await response.json();
+    const userData = await result.results;
+  
     for (const user of userData) {
       // create  profile for each user
       const userContainer = document.createElement("div");
@@ -28,5 +29,7 @@ response
       userContainer.append(userImg, userName);
       document.querySelector(".users").appendChild(userContainer);
     }
-  })
-  .catch((err) => console.log(err));
+  } catch (error) {
+    console.log(error.status);
+  }
+})();
