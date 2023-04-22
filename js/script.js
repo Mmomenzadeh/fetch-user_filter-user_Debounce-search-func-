@@ -14,33 +14,56 @@ async function getUser() {
       userData = await result.results;
       localStorage.setItem("userList", JSON.stringify(userData));
     }
-    ShowUser(userData);
+    return userData;
   } catch (error) {
-    console.log(error.status);
+    console.log(error);
   }
 }
 
-function ShowUser(userData) {
-  for (const user of userData) {
-    // create  profile for each user
-    const userContainer = document.createElement("div");
-    userContainer.className = "user col-2";
-    const userImg = document.createElement("img");
-    const userName = document.createElement("h3");
+async function ShowUser(userData = null) {
+  document.querySelector(".users").innerHTML = "";
 
-    /// Data extraction using object destructuring
-    const {
-      name: { first, last, title },
-      picture: { large: userPic },
-    } = user;
+  try {
+    if (userData === null) {
+      userData = await getUser();
+    }
+    for (const user of userData) {
+      // create  profile for each user
+      const userContainer = document.createElement("div");
+      userContainer.className = "user col-2";
+      const userImg = document.createElement("img");
+      const userName = document.createElement("h3");
 
-    userName.innerHTML = `${first} ${last} ${title}`;
-    userImg.src = `${userPic}`;
+      /// Data extraction using object destructuring
+      const {
+        name: { first, last, title },
+        picture: { large: userPic },
+      } = user;
 
-    /// append
-    userContainer.append(userImg, userName);
-    document.querySelector(".users").appendChild(userContainer);
+      userName.innerHTML = `${first} ${last} ${title}`;
+      userImg.src = `${userPic}`;
+
+      /// append
+      userContainer.append(userImg, userName);
+      document.querySelector(".users").appendChild(userContainer);
+    }
+    return userData;
+  } catch (error) {
+    console.log(error);
   }
 }
 
-document.addEventListener("DOMContentLoaded", getUser);
+(async function () {
+  const userData = await ShowUser();
+
+  document.querySelector("#filter").addEventListener("keyup", (e) => {
+    const queryString = e.target.value.toLowerCase();
+
+    const filteredUser = userData.filter((item) => {
+      const name = `${item.name.title} ${item.name.first} ${item.name.last}`;
+      return name.toLowerCase().indexOf(queryString) > -1;
+    });
+
+    ShowUser(filteredUser);
+  });
+})();
