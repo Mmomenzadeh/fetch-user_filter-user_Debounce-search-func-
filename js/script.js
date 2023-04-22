@@ -14,30 +14,33 @@ async function getUser() {
       userData = await result.results;
       localStorage.setItem("userList", JSON.stringify(userData));
     }
-
-    for (const user of userData) {
-      // create  profile for each user
-      const userContainer = document.createElement("div");
-      userContainer.className = "user col-2";
-      const userImg = document.createElement("img");
-      const userName = document.createElement("h3");
-
-      /// Data extraction using object destructuring
-      const {
-        name: { first, last, title },
-        picture: { large: userPic },
-      } = user;
-
-      userName.innerHTML = `${first} ${last} ${title}`;
-      userImg.src = `${userPic}`;
-
-      /// append
-      userContainer.append(userImg, userName);
-      document.querySelector(".users").appendChild(userContainer);
-    }
+    ShowUser(userData);
   } catch (error) {
     console.log(error.status);
   }
 }
 
-getUser();
+function ShowUser(userData) {
+  for (const user of userData) {
+    // create  profile for each user
+    const userContainer = document.createElement("div");
+    userContainer.className = "user col-2";
+    const userImg = document.createElement("img");
+    const userName = document.createElement("h3");
+
+    /// Data extraction using object destructuring
+    const {
+      name: { first, last, title },
+      picture: { large: userPic },
+    } = user;
+
+    userName.innerHTML = `${first} ${last} ${title}`;
+    userImg.src = `${userPic}`;
+
+    /// append
+    userContainer.append(userImg, userName);
+    document.querySelector(".users").appendChild(userContainer);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", getUser);
