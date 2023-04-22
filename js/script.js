@@ -2,13 +2,19 @@
 
 const BASE_URL = "https://randomuser.me/api/?inc=name,picture&results=48";
 
-// useing IIFE
-(async function () {
+async function getUser() {
   try {
-    const response = await fetch(BASE_URL);
-    const result = await response.json();
-    const userData = await result.results;
-  
+    let userData = [];
+
+    if (localStorage.hasOwnProperty("userList")) {
+      userData = JSON.parse(localStorage.getItem("userList"));
+    } else {
+      const response = await fetch(BASE_URL);
+      const result = await response.json();
+      userData = await result.results;
+      localStorage.setItem("userList", JSON.stringify(userData));
+    }
+
     for (const user of userData) {
       // create  profile for each user
       const userContainer = document.createElement("div");
@@ -32,4 +38,6 @@ const BASE_URL = "https://randomuser.me/api/?inc=name,picture&results=48";
   } catch (error) {
     console.log(error.status);
   }
-})();
+}
+
+getUser();
